@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ernährungs-Lernspiel FaGe - Alle Fragen</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7fb;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 10px;
+        }
+
+        .question-number {
+            background: var(--primary-color);
+            color: white;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        h3 { margin: 0; color: var(--primary-color); }
+
+        .case-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #576574;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 1px solid #dcdde1;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .correct {
+            border-color: var(--success-color);
+            background: #e1f5e8;
+            color: #1b5e20;
+        }
+
+        .feedback-text {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: block;
+            font-weight: bold;
+        }
+
+        .print-hint {
+            text-align: center;
+            margin-top: 50px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .question-card { box-shadow: none; border: 1px solid #eee; break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📖 Lernkatalog: Ernährung FaGe</h1>
+        <p>Alle 20 Fälle und Lösungen auf einen Blick zur Bearbeitung.</p>
+    </header>
+
+    <div id="questions-list">
+        <!-- Fragen werden via JS eingefügt -->
+    </div>
+
+    <div class="print-hint">
+        Diese Seite eignet sich auch zum Ausdrucken als Lernunterlage.
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            title: "Diabetes Typ 2",
+            case: "Herr Müller hat Diabetes Typ 2. Welches Frühstück ist für seine Blutzuckerstabilität am besten geeignet?",
+            options: [
+                { text: "Weissbrot mit Konfitüre & Orangensaft", correct: false, feedback: "Zu viele einfache Kohlenhydrate lassen den Blutzucker schnell ansteigen." },
+                { text: "Vollkornbrot mit Käse, Ei & Wasser", correct: true, feedback: "Ballaststoffe und Proteine halten den Blutzucker stabil." },
+                { text: "Cornflakes mit Honig & Milch", correct: false, feedback: "Verarbeitete Flocken und Honig führen zu hohen Blutzuckerspitzen." }
+            ]
+        },
+        {
+            title: "Hypertonie (Bluthochdruck)",
+            case: "Frau Keller leidet an Bluthochdruck. Worauf sollte bei ihrer Mahlzeit besonders geachtet werden?",
+            options: [
+                { text: "Viel Salz für den Geschmack", correct: false, feedback: "Salz bindet Wasser und erhöht den Blutdruck weiter." },
+                { text: "Frische Kräuter statt Kochsalz", correct: true, feedback: "Kräuter geben Aroma ohne den Blutdruck zu belasten." },
+                { text: "Viel Lakritz als Dessert", correct: false, feedback: "Lakritz kann den Blutdruck zusätzlich gefährlich erhöhen." }
+            ]
+        },
+        {
+            title: "Obstipation (Verstopfung)",
+            case: "Ein Bewohner klagt über Verstopfung. Welche Empfehlung unterstützt die Verdauung am besten?",
+            options: [
+                { text: "Weissbrot und viel Bananen", correct: false, feedback: "Diese Lebensmittel wirken eher stopfend." },
+                { text: "Vollkornprodukte, Trockenpflaumen & viel Trinken", correct: true, feedback: "Ballaststoffe benötigen viel Flüssigkeit zum Quellen." },
+                { text: "Wenig Trinken, um den Darm zu entlasten", correct: false, feedback: "Flüssigkeitsmangel ist eine Hauptursache für Obstipation." }
+            ]
+        },
+        {
+            title: "Dysphagie (Schluckstörung)",
+            case: "Herr S. hat eine schwere Dysphagie nach einem Insult. Welche Konsistenz ist am sichersten?",
+            options: [
+                { text: "Dünnflüssiges Wasser", correct: false, feedback: "Dünnflüssiges führt bei Dysphagie oft zu Aspiration (Verschlucken)." },
+                { text: "Pürierte Kost (Stufe 1) und angedickte Flüssigkeit", correct: true, feedback: "Homogene, angedickte Konsistenzen lassen sich sicherer schlucken." },
+                { text: "Krümeliges Gebäck oder Zwieback", correct: false, feedback: "Krümelige Speisen erhöhen das Aspirationsrisiko massiv." }
+            ]
+        },
+        {
+            title: "Zöliakie",
+            case: "Ein Patient hat Zöliakie. Welches Lebensmittel darf er auf keinen Fall essen?",
+            options: [
+                { text: "Kartoffelstock", correct: false, feedback: "Kartoffeln sind von Natur aus glutenfrei." },
+                { text: "Teigwaren aus Hartweizengriess", correct: true, feedback: "Weizen enthält Gluten, welches bei Zöliakie die Dünndarmzotten schädigt." },
+                { text: "Naturreis", correct: false, feedback: "Reis ist glutenfrei und für Zöliakie-Patienten geeignet." }
+            ]
+        },
+        {
+            title: "Mangelernährung (Malnutrition)",
+            case: "Sie bemerken bei einer Bewohnerin eine ungewollte Gewichtsabnahme. Was ist die erste Massnahme?",
+            options: [
+                { text: "Nahrungskarenz verordnen", correct: false, feedback: "Das würde die Situation verschlimmern." },
+                { text: "Mahlzeiten anreichern (z.B. mit Rapsöl oder Proteinpulver)", correct: true, feedback: "Anreicherung erhöht die Energiedichte bei gleicher Portionsgrösse." },
+                { text: "Nur noch Wasser anbieten", correct: false, feedback: "Wasser hat keine Kalorien und hilft nicht gegen Untergewicht." }
+            ]
+        },
+        {
+            title: "Flüssigkeitsbilanz",
+            case: "Ein Klient hat eine Herzinsuffizienz und eine Trinkmengenbeschränkung. Wie unterstützen Sie ihn?",
+            options: [
+                { text: "Immer ein volles Glas bereitstellen", correct: false, feedback: "Das verleitet dazu, die Beschränkung zu überschreiten." },
+                { text: "Kleine Gläser nutzen und Mundspülungen anbieten", correct: true, feedback: "Kleine Mengen wirken optisch nach mehr; Mundpflege lindert Durstgefühl." },
+                { text: "Ihm sagen, er soll einfach gar nichts trinken", correct: false, feedback: "Der Körper braucht immer ein Minimum an Flüssigkeit." }
+            ]
+        },
+        {
+            title: "Laktoseintoleranz",
+            case: "Was passiert im Körper bei einer Laktoseintoleranz?",
+            options: [
+                { text: "Allergie gegen Milcheiweiss", correct: false, feedback: "Das wäre eine Milchallergie, keine Intoleranz." },
+                { text: "Mangel an dem Enzym Laktase", correct: true, feedback: "Ohne Laktase kann der Milchzucker im Dünndarm nicht aufgespalten werden." },
+                { text: "Überproduktion von Insulin", correct: false, feedback: "Insulin regelt den Blutzucker, nicht die Laktoseverdauung." }
+            ]
+        },
+        {
+            title: "Niereninsuffizienz",
+            case: "Bei chronischer Niereninsuffizienz muss oft auf ein bestimmtes Mineral geachtet werden. Welches?",
+            options: [
+                { text: "Vitamin C", correct: false, feedback: "Vitamin C ist hier meist nicht das Hauptproblem." },
+                { text: "Kalium", correct: true, feedback: "Hohe Kaliumwerte können bei Nierenschwäche zu Herzrhythmusstörungen führen." },
+                { text: "Eisen", correct: false, feedback: "Eisenmangel kommt vor, ist aber diätetisch meist zweitrangig gegenüber Kalium." }
+            ]
+        },
+        {
+            title: "Osteoporose",
+            case: "Welche Nährstoffe sind für die Knochengesundheit besonders wichtig?",
+            options: [
+                { text: "Zucker und Fett", correct: false, feedback: "Diese liefern Energie, helfen den Knochen aber nicht direkt." },
+                { text: "Kalzium und Vitamin D", correct: true, feedback: "Kalzium ist der Baustoff, Vitamin D hilft beim Einbau in den Knochen." },
+                { text: "Vitamin B12 und Folsäure", correct: false, feedback: "Diese sind wichtig für die Blutbildung und Nerven." }
+            ]
+        },
+        {
+            title: "Dehydration",
+            case: "Was ist ein typisches Anzeichen für Flüssigkeitsmangel bei älteren Menschen?",
+            options: [
+                { text: "Starkes Schwitzen", correct: false, feedback: "Schwitzen führt zu Flüssigkeitsverlust, ist aber kein Symptom von Mangel." },
+                { text: "Stehende Hautfalten und Verwirrtheit", correct: true, feedback: "Mangelnder Hautturgor und kognitive Einbussen sind Warnsignale." },
+                { text: "Heller, geruchloser Urin", correct: false, feedback: "Das deutet eher auf eine sehr gute Hydrierung hin." }
+            ]
+        },
+        {
+            title: "Gicht",
+            case: "Herr Huber hat einen Gichtanfall. Welches Lebensmittel sollte er meiden?",
+            options: [
+                { text: "Innereien und Fleisch (purinreich)", correct: true, feedback: "Purine werden zu Urat (Harnsäure) abgebaut, was Gicht auslöst." },
+                { text: "Magerquark", correct: false, feedback: "Milchprodukte sind purinarm und bei Gicht meist unbedenklich." },
+                { text: "Vollkornbrot", correct: false, feedback: "Vollkorn ist gesund; Fleisch ist bei Gicht das grössere Problem." }
+            ]
+        },
+        {
+            title: "Ernährung bei Wundheilung",
+            case: "Ein Patient hat einen Dekubitus. Welcher Nährstoff ist für die Wundheilung essenziell?",
+            options: [
+                { text: "Kohlenhydrate", correct: false, feedback: "Sie liefern Energie, bauen aber kein Gewebe auf." },
+                { text: "Eiweiss (Proteine)", correct: true, feedback: "Proteine sind die Bausteine für neues Gewebe und Zellreparatur." },
+                { text: "Gesättigte Fettsäuren", correct: false, feedback: "Diese haben keinen direkten positiven Effekt auf die Wundheilung." }
+            ]
+        },
+        {
+            title: "Leichte Vollkost",
+            case: "Was zeichnet eine 'Leichte Vollkost' aus?",
+            options: [
+                { text: "Sie besteht nur aus flüssiger Nahrung", correct: false, feedback: "Das wäre eine Flüssigkost, keine Vollkost." },
+                { text: "Weglassen von blähenden und schwer verdaulichen Speisen", correct: true, feedback: "Ziel ist die Entlastung der Verdauungsorgane bei vollem Nährwert." },
+                { text: "Völliger Verzicht auf Fett", correct: false, feedback: "Fett ist lebensnotwendig; es wird nur auf schwer verdauliche Fette verzichtet." }
+            ]
+        },
+        {
+            title: "Essen anreichen",
+            case: "Worauf achten Sie beim Eingeben von Speisen bei einer pflegebedürftigen Person?",
+            options: [
+                { text: "Möglichst schnell füttern, damit das Essen warm bleibt", correct: false, feedback: "Hektik erhöht das Aspirationsrisiko und ist entwürdigend." },
+                { text: "Pausen machen und Schluckreflex abwarten", correct: true, feedback: "Geduld ist entscheidend für Sicherheit und Wohlbefinden." },
+                { text: "Den Kopf weit in den Nacken legen", correct: false, feedback: "Nackenstreckung öffnet die Atemwege und macht Verschlucken wahrscheinlicher." }
+            ]
+        },
+        {
+            title: "BMI (Body Mass Index)",
+            case: "Wie wird der BMI berechnet?",
+            options: [
+                { text: "Grösse minus Gewicht", correct: false, feedback: "Das ist keine medizinische Formel." },
+                { text: "Gewicht (kg) geteilt durch (Grösse in m zum Quadrat)", correct: true, feedback: "Das ist die offizielle Formel zur Gewichtsklassifizierung." },
+                { text: "Alter plus Gewicht", correct: false, feedback: "Das Alter ist nicht Teil der BMI-Berechnungsformel." }
+            ]
+        },
+        {
+            title: "Künstliche Ernährung",
+            case: "Was ist eine 'PEG-Sonde'?",
+            options: [
+                { text: "Eine Sonde durch die Nase in den Magen", correct: false, feedback: "Das ist eine transnasale Magensonde." },
+                { text: "Eine perkutane Sonde direkt durch die Bauchwand in den Magen", correct: true, feedback: "PEG steht für Perkutane Endoskopische Gastrostomie." },
+                { text: "Eine Infusion in die Vene", correct: false, feedback: "Das wäre eine parenterale Ernährung." }
+            ]
+        },
+        {
+            title: "Vitamine",
+            case: "Welches Vitamin ist besonders wichtig für die Blutgerinnung?",
+            options: [
+                { text: "Vitamin A", correct: false, feedback: "Vitamin A ist wichtig für die Sehkraft." },
+                { text: "Vitamin K", correct: true, feedback: "Vitamin K (Koagulation) ist essenziell für die Blutstillung." },
+                { text: "Vitamin E", correct: false, feedback: "Vitamin E dient primär als Zellschutz (Antioxidans)." }
+            ]
+        },
+        {
+            title: "Zahngesundheit",
+            case: "Warum ist eine gute Mundpflege für die Ernährung wichtig?",
+            options: [
+                { text: "Weil weisse Zähne schöner aussehen", correct: false, feedback: "Das ist ästhetisch, aber nicht der funktionale Hauptgrund." },
+                { text: "Schmerzen oder fehlende Zähne verhindern eine adäquate Nahrungsaufnahme", correct: true, feedback: "Nur wer schmerzfrei kauen kann, isst ausreichend und ausgewogen." },
+                { text: "Es hat keinen Einfluss auf die Ernährung", correct: false, feedback: "Falsch. Mundgesundheit ist die Basis der Verdauung." }
+            ]
+        },
+        {
+            title: "Energiebedarf",
+            case: "Wovon hängt der Energiebedarf eines Menschen primär ab?",
+            options: [
+                { text: "Nur von der Haarfarbe", correct: false, feedback: "Völlig irrelevant für den Stoffwechsel." },
+                { text: "Alter, Geschlecht, Körpergrösse und körperliche Aktivität", correct: true, feedback: "Diese Faktoren bestimmen Grundumsatz und Leistungsumsatz." },
+                { text: "Nur von der aktuellen Uhrzeit", correct: false, feedback: "Die Uhrzeit ändert den Bedarf nicht grundsätzlich." }
+            ]
+        }
+    ];
+
+    const listContainer = document.getElementById('questions-list');
+
+    questions.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        let optionsHTML = '';
+        q.options.forEach(opt => {
+            optionsHTML += `
+                <div class="option ${opt.correct ? 'correct' : ''}">
+                    ${opt.text}
+                    ${opt.correct ? `<span class="feedback-text"> Lösung: ${opt.feedback}</span>` : ''}
+                </div>
+            `;
+        });
+
+        card.innerHTML = `
+            <div class="question-header">
+                <div class="question-number">${index + 1}</div>
+                <h3>${q.title}</h3>
+            </div>
+            <div class="case-text">${q.case}</div>
+            <div class="options-list">
+                ${optionsHTML}
+            </div>
+        `;
+        listContainer.appendChild(card);
+    });
+</script>
+
+</body>
+</html>
